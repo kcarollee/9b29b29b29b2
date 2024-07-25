@@ -12,7 +12,7 @@ function main(){
 	const far = 1000;
 	const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-	camera.position.set(0, 0, 150);
+	camera.position.set(0, 0, 50);
 
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x000000);
@@ -58,6 +58,7 @@ function main(){
 
 	const basicMaterial = new THREE.MeshBasicMaterial({
 		color:0xFF0000,
+		wireframe: true
 	})
 	const gap = 35;
 
@@ -194,7 +195,7 @@ function main(){
 	}
 
 	function onPointerMove( event ) {
-
+		event.preventDefault();
 		// calculate pointer position in normalized device coordinates
 		// (-1 to +1) for both components
 
@@ -205,9 +206,15 @@ function main(){
 	window.addEventListener( 'pointermove', onPointerMove );
 
 	function onPointerClick( event ){
-		pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-		pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-		
+		if (event.touches) {
+			// For touch events, get the first touch point
+			pointer.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+			pointer.y = - (event.touches[0].clientY / window.innerHeight) * 2 + 1;
+		} else {
+			// For mouse events
+			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+			pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
+		}
 		let intersects = raycaster.intersectObjects( scene.children );
 		//console.log(intersects[0]);
 		if (intersects[0].object.parent.name == "obstacle"){
@@ -215,6 +222,7 @@ function main(){
 		}
 	}
 	window.addEventListener('pointerdown', onPointerClick);
+	window.addEventListener('touchstart', onPointerClick, false);
 
 // HINT BUTTON
 	document.getElementById('hint-button').addEventListener('click', function() {

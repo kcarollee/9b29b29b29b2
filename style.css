@@ -63,6 +63,7 @@ html, body {
 #hint-image {
    display: none; /* Hidden by default */
    position: fixed;
+   width: 50vh;
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
