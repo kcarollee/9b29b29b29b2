@@ -6,13 +6,13 @@ function main(){
 	const renderer = new THREE.WebGLRenderer({canvas});
 
 //CAMERA
-	const fov = 75;
+	const fov = 90;
 	const aspect = 2; // display aspect of the canvas
 	const near = 0.1;
 	const far = 1000;
 	const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-	camera.position.set(0, 0, 100);
+	camera.position.set(0, 0, 150);
 
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color(0x000000);
@@ -21,6 +21,7 @@ function main(){
 
 // ORBIT CONTROLS
 	const controls = new OrbitControls( camera, renderer.domElement );
+	controls.enableDamping = true;
 
 // CUBEMAP TEXTURE
 	const envTexture = new THREE.CubeTextureLoader()
@@ -38,7 +39,7 @@ function main(){
 	const svgPathsArr = [];
 	const svgLoader = new SVGLoader();
 	const extrusionSettings = {
-		depth: 3,  // Depth to extrude the shape
+		depth: 100,  // Depth to extrude the shape
 		bevelEnabled: true,
 		bevelThickness: 20,
 		bevelSize: 10,
@@ -56,29 +57,47 @@ function main(){
 	});
 
 	const basicMaterial = new THREE.MeshBasicMaterial({
-		color:0xFFFFFF,
+		color:0xFF0000,
 	})
 	const gap = 35;
+
+	const answerStrings = ["", "", ""];
 	for (let i = 0; i < 3; i++){
 		for (let j = 0; j < 3; j++){
 			for (let k = 0; k < 3; k++){
 				let index = Math.floor(Math.random() * 36);
 				let url = "assets/svgs/svgFile " + "(" + (index + 1) + ").svg";
-				let posX = -gap + i *  gap;
-				let posY = -gap + j *  gap;
-				let posZ = -gap + k *  gap;
+				let posX = -gap + k *  gap;
+				let posY = gap - j *  gap;
+				let posZ = gap - i *  gap;
+				let mat;
+				if (Math.random() < 0.5) {
+					mat = standardMaterial;
+					answerStrings[i] += indexToCode(index);
+				}
+				else mat = basicMaterial;
 				
 				svgLoader.load(url, (data) => {
-					svgToMesh(data, posX, posY, posZ);
+					svgToMesh(data, posX, posY, posZ, mat);
 				});
 			}
 		}
-		
 	}
-	
-	
 
-	function svgToMesh(data, posX, posY, posZ){
+	console.log(answerStrings);
+	
+	
+	function indexToCode(index){
+		// NUMBER
+		if (index < 26){
+			return String.fromCharCode(index + 65);
+		}
+		else {
+			return String.fromCharCode(index + 22);
+		}
+	}
+
+	function svgToMesh(data, posX, posY, posZ, material){
 		
 		// The SVGLoader parses the file and provides paths
 		const paths = data.paths;
@@ -89,28 +108,78 @@ function main(){
 		paths.forEach((path) => {
 			// Convert the SVG path into shapes
 			const shapes = SVGLoader.createShapes(path);
-	
 			shapes.forEach((shape) => {
 				// Create an ExtrudeGeometry from the shape
 				const geometry = new THREE.ExtrudeGeometry(shape, extrusionSettings);
-				
-				
-	
 				// Create a mesh from the geometry and material
-				const mesh = new THREE.Mesh(geometry, standardMaterial);
+				const mesh = new THREE.Mesh(geometry, material);
 				group.add(mesh);
 			});
 		});
 
 		let scale = 0.05;
 		group.rotation.x = Math.PI;
-		console.log(posX, posY, posZ)
-		group.position.set(-scale * 500 + posX, scale * 500 + posY, posZ);
+		//console.log(posX, posY, posZ)
+		group.position.set(-scale * 500 + posX, scale * 500 + posY + 20, posZ);
 		group.scale.set(scale, scale, scale);
 		// Add the group to the scene
 		scene.add(group);
 	}
 
+// ANSWER SUBMISSION
+	// JavaScript to handle form submission
+	document.getElementById('submit-button').addEventListener('click', function(event) {
+		// Prevent default form submission behavior
+		event.preventDefault();
+
+		// Retrieve the values from the inputs
+		const input1Value = document.getElementById('input1').value;
+		const input2Value = document.getElementById('input2').value;
+		const input3Value = document.getElementById('input3').value;
+
+		// ANSWER EVENT
+		if (input1Value === answerStrings[0] &&
+			input2Value === answerStrings[1] &&
+			input3Value === answerStrings[2] ){
+			console.log("ANSWER")
+		}
+		// WRONG ANSWER
+		else {
+			console.log("WRONG");
+		}
+	});
+
+// RAYCASTER
+	const raycaster = new THREE.Raycaster();
+	const pointer = new THREE.Vector2();
+
+	function updateRaycaster(){
+		raycaster.setFromCamera( pointer, camera );
+		// calculate objects intersecting the picking ray
+		const intersects = raycaster.intersectObjects( scene.children );
+		console.log(intersects[0])
+	}
+
+	function onPointerMove( event ) {
+
+		// calculate pointer position in normalized device coordinates
+		// (-1 to +1) for both components
+
+		pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+	}
+	window.addEventListener( 'pointermove', onPointerMove );
+
+// HINT BUTTON
+	document.getElementById('hint-button').addEventListener('click', function() {
+		const hintImage = document.getElementById('hint-image');
+		if (hintImage.style.display == 'none' || hintImage.style.display == '') {
+			hintImage.style.display = 'block';
+		} else {
+			hintImage.style.display = 'none';
+		}
+	});
 
 
 
@@ -123,6 +192,7 @@ function main(){
 			camera.updateProjectionMatrix();
 		}
 		renderer.render(scene, camera);
+		updateRaycaster();
 		requestAnimationFrame(render);
 	}
 

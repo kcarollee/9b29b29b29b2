@@ -15,8 +15,27 @@
       }
     }
   </script>
+  
   <script type="module" src="main.js"></script>
   <body>
+      <button id="hint-button">???</button>
+      <div id="hint-image">
+          <img src="./assets/fontsheet2.png" alt="Hint Image" />
+      </div>
+      <div id="forms-container">
+        <form class="form-input">
+            <input type="text" name="input1" placeholder="Enter text here" id="input1"/>
+        </form>
+        <form class="form-input">
+            <input type="text" name="input2" placeholder="Enter text here" id="input2"/>
+        </form>
+        <form class="form-input">
+            <input type="text" name="input3" placeholder="Enter text here" id="input3"/>
+        </form>
+
+        <button class="submit-button" id="submit-button">Submit</button>
+    </div>
+
     <canvas id="c"></canvas>
   </body>
 </html>
