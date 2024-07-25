@@ -71,14 +71,19 @@ function main(){
 				let posY = gap - j *  gap;
 				let posZ = gap - i *  gap;
 				let mat;
+				let mode;
 				if (Math.random() < 0.5) {
 					mat = standardMaterial;
 					answerStrings[i] += indexToCode(index);
+					mode = 'answer';
 				}
-				else mat = basicMaterial;
+				else {
+					mat = basicMaterial;
+					mode = 'obstacle';
+				}
 				
 				svgLoader.load(url, (data) => {
-					svgToMesh(data, posX, posY, posZ, mat);
+					svgToMesh(data, posX, posY, posZ, mat, mode);
 				});
 			}
 		}
@@ -97,14 +102,14 @@ function main(){
 		}
 	}
 
-	function svgToMesh(data, posX, posY, posZ, material){
+	function svgToMesh(data, posX, posY, posZ, material, mode){
 		
 		// The SVGLoader parses the file and provides paths
 		const paths = data.paths;
 
 		// Create a group to hold all the extruded shapes
 		const group = new THREE.Group();
-	
+		group.name = mode;
 		paths.forEach((path) => {
 			// Convert the SVG path into shapes
 			const shapes = SVGLoader.createShapes(path);
@@ -167,8 +172,8 @@ function main(){
 	function updateRaycaster(){
 		raycaster.setFromCamera( pointer, camera );
 		// calculate objects intersecting the picking ray
-		const intersects = raycaster.intersectObjects( scene.children );
-		console.log(intersects[0])
+		let intersects = raycaster.intersectObjects( scene.children );
+		//console.log(intersects[0])
 	}
 
 	function onPointerMove( event ) {
@@ -181,6 +186,15 @@ function main(){
 
 	}
 	window.addEventListener( 'pointermove', onPointerMove );
+
+	function onPointerClick( event ){
+		let intersects = raycaster.intersectObjects( scene.children );
+		console.log(intersects[0]);
+		if (intersects[0].object.parent.name == "obstacle"){
+			intersects[0].object.parent.scale.set(0, 0, 0);
+		}
+	}
+	window.addEventListener('pointerdown', onPointerClick);
 
 // HINT BUTTON
 	document.getElementById('hint-button').addEventListener('click', function() {
