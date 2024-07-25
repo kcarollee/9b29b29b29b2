@@ -149,6 +149,17 @@ function main(){
 		}
 	});
 
+	// Prevent form submission on Enter key press
+	document.querySelectorAll('input').forEach(input => {
+		input.addEventListener('keydown', function(event) {
+			if (event.key === 'Enter') {
+				event.preventDefault(); // Prevent the default Enter key action
+			}
+		});
+	});
+
+	
+
 // RAYCASTER
 	const raycaster = new THREE.Raycaster();
 	const pointer = new THREE.Vector2();
