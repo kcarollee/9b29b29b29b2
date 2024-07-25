@@ -102,6 +102,7 @@ function main(){
 		}
 	}
 
+	const groupArr = [];
 	function svgToMesh(data, posX, posY, posZ, material, mode){
 		
 		// The SVGLoader parses the file and provides paths
@@ -127,12 +128,15 @@ function main(){
 		//console.log(posX, posY, posZ)
 		group.position.set(-scale * 500 + posX, scale * 500 + posY + 20, posZ);
 		group.scale.set(scale, scale, scale);
+		groupArr.push(group);
 		// Add the group to the scene
 		scene.add(group);
 	}
 
 // ANSWER SUBMISSION
 	// JavaScript to handle form submission
+	let answerAnimationTriggered = false;
+	let answerAnimationCount = 0;
 	document.getElementById('submit-button').addEventListener('click', function(event) {
 		// Prevent default form submission behavior
 		event.preventDefault();
@@ -146,7 +150,8 @@ function main(){
 		if (input1Value === answerStrings[0] &&
 			input2Value === answerStrings[1] &&
 			input3Value === answerStrings[2] ){
-			console.log("ANSWER")
+			answerAnimationTriggered = true;
+			console.log("ANSWER");
 		}
 		// WRONG ANSWER
 		else {
@@ -162,6 +167,18 @@ function main(){
 			}
 		});
 	});
+
+	function answerAnimation(){
+		if (answerAnimationTriggered){
+			groupArr.forEach(function(group){
+				group.position.add(new THREE.Vector3(
+					(Math.random() - 0.5) * 2.0, 
+					(Math.random() - 0.5) * 2.0, 
+					(Math.random() - 0.5) * 2.0)
+				);
+			})
+		}
+	}
 
 	
 
@@ -188,8 +205,11 @@ function main(){
 	window.addEventListener( 'pointermove', onPointerMove );
 
 	function onPointerClick( event ){
+		pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+		
 		let intersects = raycaster.intersectObjects( scene.children );
-		console.log(intersects[0]);
+		//console.log(intersects[0]);
 		if (intersects[0].object.parent.name == "obstacle"){
 			intersects[0].object.parent.scale.set(0, 0, 0);
 		}
@@ -209,6 +229,7 @@ function main(){
 
 
 	function render(time){
+		answerAnimation();
 		time *= 0.001;
 		controls.update();
 		if (resizeRenderToDisplaySize(renderer)){
