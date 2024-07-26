@@ -18,11 +18,27 @@
   
   <script type="module" src="main.js"></script>
   <body>
-      <button id="hint-button">???</button>
+      <button id="hint-button">HINT</button>
       <div id="hint-image">
-          <img src="./assets/fontsheet2.png" alt="Hint Image" />
+        <button id="close-hint-button">X</button>
+        <img src="./assets/fontsheet2.png" alt="Hint Image" />
+        <br>
+        <br>
+        <br>
+        <img src="./assets/direction.png" alt="Hint Image" />
+      </div>
+
+      <div id="logo-image">
+        <img src="./assets/logo.png" alt="logo Image" />
+      </div>
+
+      <div id="answer-state">
+        <p>
+          WRONG
+        </p>
       </div>
       <div id="forms-container">
+        
         <form class="form-input">
             <input type="text" name="input1" placeholder="answer 1" id="input1"/>
         </form>
@@ -32,7 +48,6 @@
         <form class="form-input">
             <input type="text" name="input3" placeholder="answer 3" id="input3"/>
         </form>
-
         <button class="submit-button" id="submit-button">submit</button>
     </div>
 

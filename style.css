@@ -1,3 +1,12 @@
+@font-face {
+   font-family: 'NeueHaas';
+   src: url('assets/fonts/NeueHaasDisplayLightItalic.ttf') format('truetype');
+   font-weight: normal;
+   font-style: normal;
+}
+ 
+
+
 html, body {
    margin: 0;
    height: 100%;
@@ -9,6 +18,23 @@ html, body {
    left: 0;
    display: block;
    z-index: -1; 
+   
+}
+
+#answer-state {
+   position: absolute;
+   top: 100px;
+   left: 30px;
+   color: #FF0000;
+   z-index: 30;
+   font-family: 'NeueHaas';
+   display: none;
+   font-size: 18px;
+}
+
+#answe-state p {
+   text-align: center;
+   font-size: 50px;
 }
 
 #forms-container {
@@ -23,15 +49,27 @@ html, body {
    justify-content: center;
    color: transparent;
 }
+
 .form-input {
    margin-bottom: 10px; /* Space between the forms */
+}
+
+#corner-image {
+   position: absolute;
+   bottom: 75px;
    
+   border: 20px;
+   max-width: 50px;
+   max-height: 50px;
+   z-index: 10;
 }
 
 .form-input input {
    text-align: center;
    background-color: transparent;
    color: #bbbbbb;
+   border-width: 1px;
+   font-family: 'NeueHaas';
 }
 
 .submit-button {
@@ -41,8 +79,9 @@ html, body {
    background-color: transparent;
    color: white;
    border: none;
-   border-radius: 5px;
-   font-size: 16px;
+
+   font-size: 14px;
+   font-family: 'NeueHaas';
 }
 .submit-button:hover {
    background-color: #bbbbbb; /* Darker shade on hover */
@@ -52,26 +91,51 @@ html, body {
    position: fixed;
    top: 20px;
    right: 20px;
+
    padding: 10px;
    background-color: transparent;
    color: white;
    border: none;
-   border-radius: 5px;
    cursor: pointer;
    z-index: 20; /* Ensure it's above the canvas and other content */
+   font-family: 'NeueHaas';
+   font-size: 20px;
 }
 #hint-image {
    display: none; /* Hidden by default */
    position: fixed;
-   width: 50vh;
+   width: 40vh;
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
    z-index: 30; /* Ensure it's above the canvas and other content */
-   border: 2px solid #333;
-   background-color: white;
+   border: 2px solid transparent;
+   background-color: black;
 }
 #hint-image img {
    max-width: 100%;
    max-height: 100%;
+}
+
+#logo-image img{
+   top: 10px;
+   left: 20px;
+   position: fixed;
+   max-width: 60px;
+   max-height: 60px;
+   z-index: 30;
+}
+
+#close-hint-button {
+   position: absolute;
+   padding: 5px 10px;
+   background-color: transparent;
+   color: black;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   z-index: 31;
+}
+#close-hint-button:hover {
+   background-color: #FFFFFF;
 }
